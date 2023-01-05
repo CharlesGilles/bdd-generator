@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+      "target": "es6",
+      "declaration": true,
+      "module": "CommonJS",
+      "sourceMap": true,
+      "moduleResolution": "node",
+      "outDir": "dist",
+      "strict": false,
+      "rootDir": ".",
+      "lib": ["esnext"],
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+    },
+    "types": ["vitest/globals"],
+  "exclude": [
+      "node_modules",
+      "dist"
+  ]
+}
