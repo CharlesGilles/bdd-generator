@@ -4,21 +4,15 @@ const feature = loadFeature('./src/__features__/basic-with-imports/basic-scenari
 
 defineFeature(feature, (defineScenario) => {
 	let scenarioContext;
-    
+
 	beforeEach(() => {
 		scenarioContext = {};
-    });
-
-	beforeEach(() => {
-		  scenarioContext.yolo = 10;
-	});
-
-	beforeEach(() => {
-		  scenarioContext.x = 10;
+		scenarioContext.yolo = 10;
+		scenarioContext.x = 10;
 	});
 
 	afterEach(() => {
-		  scenarioContext.x = undefined;
+		scenarioContext.x = undefined
 	});
 
 	function IHavePreviouslyCreatedAPassword(defineMethod){

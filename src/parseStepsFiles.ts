@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { parse as parseFile} from '@babel/parser';
-import { ArgumentPlaceholder, ArrayExpression, CallExpression, Expression, Identifier, JSXNamespacedName, ObjectExpression, SpreadElement } from '@babel/types';
+import { ArgumentPlaceholder, ArrayExpression, CallExpression, Expression, Identifier, JSXNamespacedName, ObjectExpression, SpreadElement, Statement } from '@babel/types';
 import { Imports, IScope, StepDefinition, StepBlock, StepMatcher, HookName, ParseStepDefinitionResult, Hook } from './common.types';
 import { findAllFilesWithMatch } from './findAllFilesWithMatch';
 import { formatStepsFileParsingError } from './errors';
@@ -154,9 +154,24 @@ function getHook(cheminFichier: string, hookCall: CallExpression): Partial<Hook>
         ));
     }
 
+    if (hookCall.arguments[0].type !== 'ArrowFunctionExpression'){
+        throw new Error(formatStepsFileParsingError(
+            cheminFichier,
+            hookCall.loc,
+            `${hookName} only parameter should be an arrow function`
+        ));
+    }
+
+    let code: string[];
+    if (hookCall.arguments[0].body.type === 'BlockStatement'){
+        code = hookCall.arguments[0].body.body.map(statement => generate(statement).code);
+    } else {
+        code = [generate(hookCall.arguments[0].body).code];
+    }
+    
     return {
         name: hookName as HookName,
-        code: generate(hookCall, { }).code
+        code: code
     };
 }
 

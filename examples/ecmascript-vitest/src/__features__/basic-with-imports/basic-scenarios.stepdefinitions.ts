@@ -12,9 +12,7 @@ beforeEach(() => {
   scenarioContext.x = 10;
 });
 
-afterEach(() => {
-  scenarioContext.x = undefined;
-});
+afterEach(() => scenarioContext.x = undefined);
 
 defineStep(["given"], "I have previously created a password", () => {
   let passwordValidator = new PasswordValidator();

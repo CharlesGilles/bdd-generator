@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Feature, Hook } from "./common.types";
+import { Feature, Hook, HookName } from "./common.types";
 
 const writeFileOptions: fs.WriteFileOptions = {
     encoding: 'utf-8'
@@ -22,11 +22,7 @@ function writeFeatureContext(data: string[], feature: Feature){
     data.push(`const feature = loadFeature('${feature.cheminFichier}');
 
 defineFeature(feature, (defineScenario) => {
-	let scenarioContext;
-    
-	beforeEach(() => {
-		scenarioContext = {};
-    });`);
+	let scenarioContext;`);
 }
 
 function escapeApostrophes(chaine: string){
@@ -34,20 +30,24 @@ function escapeApostrophes(chaine: string){
 }
 
 function writeHooks(data: string[], hooks: Hook[]){
+    const hooksMap = new Map<HookName, string[]>();
+    hooksMap.set('beforeEach', ['scenarioContext = {};']);
+
     hooks.forEach(hook => {
-        data.push('');
-        let i = 0;
-        const lines = hook.code.split('\n');
-        for (let line of lines){
-            if (i===0) {
-                data.push(`\t${line}`);
-            } else if (i === lines.length -1) { 
-                data.push(`\t${line};`);
-            } else {
-                data.push(`\t\t${line}`);
-            }
-            i++;
+        let codeLines = hooksMap.get(hook.name);
+        if (!codeLines) {
+            hooksMap.set(hook.name, hook.code);
+        } else {
+            codeLines.push(...hook.code);
         }
+    });
+
+    hooksMap.forEach((codeLines, hookName) => {
+        data.push(`\n\t${hookName}(() => {`);
+        codeLines.forEach(codeLine => {
+            data.push(`\t\t${codeLine}`);
+        });
+        data.push('\t});');
     });
 }
 

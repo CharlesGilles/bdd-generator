@@ -3,10 +3,10 @@ const feature = loadFeature('./src/__features__/basic/calculator.feature');
 
 defineFeature(feature, (defineScenario) => {
 	let scenarioContext;
-    
+
 	beforeEach(() => {
 		scenarioContext = {};
-    });
+	});
 
 	function TheNumber(defineMethod){
 		defineMethod(/^the number "(.*)"$/, value => {

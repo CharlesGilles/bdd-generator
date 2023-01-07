@@ -25,7 +25,7 @@ type HookName = 'beforeAll' | 'beforeEach' | 'afterAll' | 'afterEach';
 interface Hook {
     scopes: IScope[];
     name: HookName;
-    code: string;
+    code: string[];
 }
 
 interface ParseStepDefinitionResult {
