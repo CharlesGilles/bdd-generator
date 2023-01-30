@@ -28,6 +28,9 @@ function logStepTime(begin: number, label: string, extra?: string){
  * @param {string} featuresFrom The path to the folder which contains all needed feature files.
  */
 export function createStepsFilesFromStepDefinitionsAndFeatures(stepsFrom: string, featuresFrom: string){
+    console.log(`Recherche des fichiers "${kleur.yellow('features')}" dans le dossier "${kleur.cyan(featuresFrom)}"`);
+    console.log(`Recherche des fichiers "${kleur.yellow('stepdefinitions')}" dans le dossier "${kleur.cyan(stepsFrom)}"`);
+    
     let t = performance.now();
     const parseStepsResult = parseStepsFiles(stepsFrom);
     t = logStepTime(t, 'Parsing stepdefinitions files', `${parseStepsResult.steps.length} stepDefinitions parsed`);
