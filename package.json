@@ -1,5 +1,5 @@
 {
-  "name": "specflow-generator",
+  "name": "bdd-generator",
   "version": "1.0.2",
   "description": "",
   "main": "dist/src/index.js",
@@ -7,16 +7,17 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "git+https://charlesgilles0409@dev.azure.com/charlesgilles0409/specflow-generator/_git/specflow-generator"
+    "url": "git+https://charlesgilles0409@dev.azure.com/charlesgilles0409/bdd-generator/_git/bdd-generator"
   },
-  "homepage": "https://charlesgilles0409@dev.azure.com/charlesgilles0409/specflow-generator/_git/specflow-generator",
+  "homepage": "https://charlesgilles0409@dev.azure.com/charlesgilles0409/bdd-generator/_git/bdd-generator",
   "scripts": {
     "build": "tsc"
   },
   "keywords": [
     "specflow",
     "bdd",
-    "tests"
+    "tests",
+    "gherkin"
   ],
   "author": "Charles GILLES",
   "license": "ISC",
@@ -34,6 +35,6 @@
     "path": "^0.12.7"
   },
   "bin": {
-    "specflow-generate": "dist/bin/generate.js"
+    "bdd-generate": "dist/bin/generate.js"
   }
 }

@@ -4,12 +4,12 @@
   "description": "Execute Gherkin scenarios in Vitest",
   "main": "dist/src/index.js",
   "scripts": {
-    "test:generate": "specflow-generate",
+    "test:generate": "bdd-generate",
     "test": "vitest",
     "vitest": "vitest --verbose"
   },
   "devDependencies": {
-    "specflow-generator": "file:../..",
+    "bdd-generator": "file:../..",
     "vite": "^4.0.4",
     "vitest": "^0.26.3"
   }
