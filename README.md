@@ -15,6 +15,7 @@ Voici la commande pour installer le package
 ## Configuration
 
 Le chemin par défaut pour l'exploration des fichiers `.feature` et `.stepdefinition.[tj]sx?` est `./src/__features__`.
+Le tag par défaut permettant d'ignorer la génération à un fichier feature est `ignore-generation`; 
 
 Si vous souhaitez modifier cela, il vous faudra créer un fichier `bdd-generator.json`.
 
@@ -22,9 +23,10 @@ Si vous souhaitez modifier cela, il vous faudra créer un fichier `bdd-generator
 {
     "steps": "relative/path/to/.stepdefinitions/files",
     "features": "relative/path/to/.features/files",
+    "ignoreTag": "tag"
 }
 ```
-Les champs `steps` et `features` sont optionnels si vous souhaitez modifier soit l'un soit l'autre ou les deux.
+Les champs `steps`, `features` et `ignoreTag` sont optionnels si vous souhaitez modifier soit l'un soit l'autre ou les deux.
 Une erreur vous sera indiquée si l'un des path renseigné n'existe pas.
 
 ---
@@ -185,4 +187,6 @@ Lors de l'exécution de la commande `npm run test:generate`, si vous avez bien �
 - [X] Génération des fichiers steps à partir des fichiers .feature et .stepdefinitions
 - [X] Configuration du path des fichiers avec un fichier de configuration
 - [ ] Configuration du path des fichiers avec des paramètres à la commande `bdd-generate`
+- [X] Configuration des fichiers .feature à ignorer
 - [ ] Avoir une commande `bdd-audit` qui permettrait d'obtenir la liste des steps qui se ressemblent en terme de nom. et pourquoi pas de code.
+- [ ] Ajouter la possibilité d'avoir le package en Anglais et en Français

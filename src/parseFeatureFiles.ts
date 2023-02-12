@@ -110,17 +110,27 @@ function matchFeatureWithStepsAndHooks(cheminFichier: string, feature: ParsedFea
     };
 }
 
-function parseFeatureFiles(from: string, parseStepsResult: ParseStepDefinitionResult) {
+function parseFeatureFiles(from: string, parseStepsResult: ParseStepDefinitionResult, ignoreTag: string) {
     const featureFilenames = findAllFilesWithMatch(from, /.*\.feature$/);
 
-    return featureFilenames.map(cheminFichier => {
+    const features: Feature[] = [];
+    let nbSkipped = 0;
+
+    featureFilenames.forEach(cheminFichier => {
         const feature = loadFeature(cheminFichier, {
             loadRelativePath: false,
             errors: true
         });
-        return matchFeatureWithStepsAndHooks(cheminFichier, feature, parseStepsResult);
+        if (feature.tags.includes('@' + ignoreTag)){
+            nbSkipped++;
+            return;
+        }
+        features.push(matchFeatureWithStepsAndHooks(cheminFichier, feature, parseStepsResult));
     });
 
+    console.info(`Le tag "@${ignoreTag}" a été trouvé sur "${nbSkipped}" fichier.s. Ces fichiers ont été ignorés à la génération.`);
+
+    return features;
 }
 
 export { parseFeatureFiles };
