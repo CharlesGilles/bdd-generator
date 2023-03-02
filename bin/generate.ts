@@ -36,4 +36,4 @@ if (onlyTag === ''){
     throw new Error(`Le tag permettant de générer seuls les fichiers ayant ce tag ne peut pas être une chaine vide`);
 }
 
-createStepsFilesFromStepDefinitionsAndFeatures(stepsFrom, featuresFrom, ignoreTag, onlyTag);
+createStepsFilesFromStepDefinitionsAndFeatures(stepsFrom, featuresFrom, '@' + ignoreTag, '@' + onlyTag);
