@@ -121,19 +121,19 @@ function parseFeatureFiles(from: string, parseStepsResult: ParseStepDefinitionRe
             loadRelativePath: false,
             errors: true
         });
-        if (feature.tags.includes('@' + ignoreTag)){
+        if (feature.tags.includes(ignoreTag)){
             nbSkipped++;
             return;
         }
         features.push(matchFeatureWithStepsAndHooks(cheminFichier, feature, parseStepsResult));
     });
 
-    console.info(`Le tag "@${ignoreTag}" a été trouvé sur "${nbSkipped}" fichier.s. Ces fichiers ont été ignorés à la génération.`);
+    console.info(`Le tag "${ignoreTag}" a été trouvé sur "${nbSkipped}" fichier.s. Ces fichiers ont été ignorés à la génération.`);
 
     const featuresWithOnlyTag = features.filter(feature => feature.tags.includes(onlyTag));
 
     if (featuresWithOnlyTag.length !== 0){
-        console.info(`Le tag "@${onlyTag}" a été trouvé sur "${featuresWithOnlyTag.length}" fichier.s. seuls ces fichiers seront générés.`);
+        console.info(`Le tag "${onlyTag}" a été trouvé sur "${featuresWithOnlyTag.length}" fichier.s. Seuls ces fichiers seront générés.`);
         return featuresWithOnlyTag;
     }
 

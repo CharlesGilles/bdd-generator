@@ -11,6 +11,10 @@ function writeFileCallback(error: NodeJS.ErrnoException | null){
 	}
 }
 
+function writeHeadComment(data: string[], date: string){
+    data.push(`// File generated at ${date}`);
+}
+
 function writeImports(data: string[], feature: Feature){
 	data.push("import { defineFeature, loadFeature } from 'jest-cucumber';");
     for (const [from, imports] of feature.imports.entries()){
@@ -90,6 +94,7 @@ function writeEndFile(data: string[]){
 function createSpecsFile(feature: Feature){
     const data: string[] = [];
 
+    writeHeadComment(data, new Date().toUTCString());
     writeImports(data, feature);
     writeFeatureContext(data, feature);
     writeHooks(data, feature.hooks);
