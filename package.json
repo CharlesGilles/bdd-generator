@@ -7,9 +7,9 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "git+https://charlesgilles0409@dev.azure.com/charlesgilles0409/bdd-generator/_git/bdd-generator"
+    "url": "git+https://github.com/CharlesGilles/bdd-generator.git"
   },
-  "homepage": "https://charlesgilles0409@dev.azure.com/charlesgilles0409/bdd-generator/_git/bdd-generator",
+  "homepage": "https://github.com/CharlesGilles/bdd-generator.git/README.md",
   "scripts": {
     "build": "tsc"
   },
