@@ -27,8 +27,9 @@ function logStepTime(begin: number, label: string, extra?: string){
  * @param {string} stepsFrom The path to the folder which contains all needed stepdefinitions files.
  * @param {string} featuresFrom The path to the folder which contains all needed feature files.
  * @param {string} ignoreTag The tag to put in the .feature files you want to ignore the generation
+ * @param {string} onlyTag The tag to put in the .feature files you want execute ignore all the over files
  */
-export function createStepsFilesFromStepDefinitionsAndFeatures(stepsFrom: string, featuresFrom: string, ignoreTag: string){
+export function createStepsFilesFromStepDefinitionsAndFeatures(stepsFrom: string, featuresFrom: string, ignoreTag: string, onlyTag: string){
     console.log(`Recherche des fichiers "${kleur.yellow('features')}" dans le dossier "${kleur.cyan(featuresFrom)}"`);
     console.log(`Recherche des fichiers "${kleur.yellow('stepdefinitions')}" dans le dossier "${kleur.cyan(stepsFrom)}"`);
     
@@ -36,7 +37,7 @@ export function createStepsFilesFromStepDefinitionsAndFeatures(stepsFrom: string
     const parseStepsResult = parseStepsFiles(stepsFrom);
     t = logStepTime(t, 'Parsing stepdefinitions files', `${parseStepsResult.steps.length} stepDefinitions parsed`);
 
-    const features = parseFeatureFiles(featuresFrom, parseStepsResult, ignoreTag);
+    const features = parseFeatureFiles(featuresFrom, parseStepsResult, ignoreTag, onlyTag);
     t = logStepTime(t, 'Parsing feature files', `${features.length} features parsed`);
     
     createSpecsFiles(features);

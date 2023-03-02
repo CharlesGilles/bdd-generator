@@ -23,10 +23,11 @@ Si vous souhaitez modifier cela, il vous faudra créer un fichier `bdd-generator
 {
     "steps": "relative/path/to/.stepdefinitions/files",
     "features": "relative/path/to/.features/files",
-    "ignoreTag": "tag"
+    "ignoreTag": "tag",
+    "onlyTag": "tag"
 }
 ```
-Les champs `steps`, `features` et `ignoreTag` sont optionnels si vous souhaitez modifier soit l'un soit l'autre ou les deux.
+Les champs `steps`, `features`, `ignoreTag` et `onlyTag` sont optionnels si vous souhaitez modifier soit l'un soit l'autre ou les deux.
 Une erreur vous sera indiquée si l'un des path renseigné n'existe pas.
 
 ---

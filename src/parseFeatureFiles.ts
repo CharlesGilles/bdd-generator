@@ -110,7 +110,7 @@ function matchFeatureWithStepsAndHooks(cheminFichier: string, feature: ParsedFea
     };
 }
 
-function parseFeatureFiles(from: string, parseStepsResult: ParseStepDefinitionResult, ignoreTag: string) {
+function parseFeatureFiles(from: string, parseStepsResult: ParseStepDefinitionResult, ignoreTag: string, onlyTag: string) {
     const featureFilenames = findAllFilesWithMatch(from, /.*\.feature$/);
 
     const features: Feature[] = [];
@@ -129,6 +129,13 @@ function parseFeatureFiles(from: string, parseStepsResult: ParseStepDefinitionRe
     });
 
     console.info(`Le tag "@${ignoreTag}" a été trouvé sur "${nbSkipped}" fichier.s. Ces fichiers ont été ignorés à la génération.`);
+
+    const featuresWithOnlyTag = features.filter(feature => feature.tags.includes(onlyTag));
+
+    if (featuresWithOnlyTag.length !== 0){
+        console.info(`Le tag "@${onlyTag}" a été trouvé sur "${featuresWithOnlyTag.length}" fichier.s. seuls ces fichiers seront générés.`);
+        return featuresWithOnlyTag;
+    }
 
     return features;
 }
