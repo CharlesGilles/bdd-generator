@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { parse as parseFile} from '@babel/parser';
-import { ArgumentPlaceholder, ArrayExpression, CallExpression, Expression, Identifier, JSXNamespacedName, ObjectExpression, SpreadElement, Statement } from '@babel/types';
+import { ArgumentPlaceholder, ArrayExpression, CallExpression, Expression, Identifier, JSXNamespacedName, ObjectExpression, SpreadElement } from '@babel/types';
 import { Imports, IScope, StepDefinition, StepBlock, StepMatcher, HookName, ParseStepDefinitionResult, Hook } from './common.types';
 import { findAllFilesWithMatch } from './findAllFilesWithMatch';
 import { formatStepsFileParsingError } from './errors';
@@ -9,7 +9,7 @@ import generate from '@babel/generator';
 const stepBlocks = ['given', 'when', 'then'];
 const scopeTypes = ['feature', 'scenario', 'tag'];
 const importsToDelete = ['defineStep', 'defineFileScopes', 'scenarioContext'];
-const packageName = 'specflow-generator';
+const packageName = '@charlesgilles/bdd-generator';
 
 function getOneScope(object: ObjectExpression): IScope {
     const scope: IScope = {};
@@ -215,7 +215,7 @@ function parseOneStepFile(cheminFichier: string): ParseStepDefinitionResult {
                             throw new Error(formatStepsFileParsingError(
                                 cheminFichier,
                                 x.loc,
-                                "defineFileScopes should be imported from 'specflow-generator' before any call"
+                                "defineFileScopes should be imported from '@charlesgilles/bdd-generator' before any call"
                             ));
                         }
                         fileScopes = getFileScopes(x.expression);
@@ -225,7 +225,7 @@ function parseOneStepFile(cheminFichier: string): ParseStepDefinitionResult {
                             throw new Error(formatStepsFileParsingError(
                                 cheminFichier,
                                 x.loc,
-                                "defineStep should be imported from 'specflow-generator' before any call"
+                                "defineStep should be imported from '@charlesgilles/bdd-generator' before any call"
                             ));
                         }
                         stepDefinitions.push(...getStepDefinition(cheminFichier, x.expression));

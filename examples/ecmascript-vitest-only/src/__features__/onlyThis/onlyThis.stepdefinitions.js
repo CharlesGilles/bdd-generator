@@ -1,4 +1,4 @@
-import { defineStep, defineFileScopes } from "specflow-generator";
+import { defineStep, defineFileScopes } from "@charlesgilles/bdd-generator";
 
 defineFileScopes([
   {
@@ -8,5 +8,5 @@ defineFileScopes([
 
 
 defineStep(['then'], 'ok', () => {
-    expect(true).toBeTrue();
+    expect(true).toBeTruthy();
 });

@@ -11,7 +11,7 @@ defineFeature(feature, (defineScenario) => {
 
 	function Ok(defineMethod){
 		defineMethod('ok', () => {
-			expect(true).toBeTrue();
+			expect(true).toBeTruthy();
 		});
 	}
 

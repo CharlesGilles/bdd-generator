@@ -6,7 +6,7 @@ export default defineConfig({
         include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}', "**/*.steps.{js,jsx,ts,tsx}"],
         watch: true,
         deps: {
-            inline: ['specflow-generator'],
+            inline: ['@charlesgilles/bdd-generator'],
         }
     }
 })

@@ -1,4 +1,4 @@
-import { defineStep, defineFileScopes, scenarioContext } from "specflow-generator";
+import { defineStep, defineFileScopes, scenarioContext } from "@charlesgilles/bdd-generator";
 
 defineFileScopes([
   {

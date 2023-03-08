@@ -1,5 +1,5 @@
 {
-  "name": "specflow-generator-examples",
+  "name": "@charlesgilles/bdd-generator-examples",
   "version": "1.0.0",
   "description": "Execute Gherkin scenarios in Vitest with only few features",
   "main": "dist/src/index.js",
@@ -9,11 +9,8 @@
     "vitest": "vitest --verbose"
   },
   "devDependencies": {
-    "bdd-generator": "file:../..",
+    "@charlesgilles/bdd-generator": "file:../..",
     "vite": "^4.0.4",
     "vitest": "^0.26.3"
-  },
-  "dependencies": {
-    "@charlesgilles/bdd-generator": "file:../.."
   }
 }
