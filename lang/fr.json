@@ -1,0 +1,39 @@
+{
+  "folderDoesntExists": "Le dossier \"{{folder}}\" n'existe pas dans le projet. Merci d'indiquer le bon dossier dans le fichier \"bdd-generator.json\".",
+  "tagCannotBeEmpty": "Le paramètre \"{{tag}}\" ne peut pas être une chaine vide.",
+  "tagConflict": "Les tags doivent tous être différent.",
+  "fileSearchInFolder": "Recherche des fichiers \"{{files}}\" dans le dossier \"{{folder}}\"",
+  "parsingStepdefinitions": "Analyse des fichiers stepdefinitions, {{nbParsed}} fichiers analysés",
+  "parsingFeatures": "Analyse des fichiers feature, {{nbParsed}} fichiers analysés",
+  "matchingFeaturesAndSteps": "Création de la correspondance entre feature et stepdefinitions",
+  "writtingSteps": "Ecriture des fichiers steps",
+  "numberOfWrittenSteps": "{{nbWritten}} fichiers steps mis à jours",
+  "executionTime": "Temps d'exécution",
+  "seconds": "secondes",
+  "miliseconds": "millisecondes",
+
+  "ignoredGeneration": "Le tag \"{{ignoreGenerationTag}}\" a été trouvé sur \"{{nbSkipped}}\" fichier.s. Ces fichiers ont été ignorés à la génération.",
+  "onlyGeneration": "Le tag \"{{onlyGenerationTag}}\" a été trouvé sur \"{{nbFiles}}\" fichier.s. Seuls ces fichiers seront générés.",
+
+  "impossibleParse": "Impossible d'analyser correctement dans le fichier",
+  "impossibleBind": "Impossible de faire correspondre une step du fichier",
+  "noStepFound": "Aucune step correspondante.",
+  "sameStepFound": "La step est définies à plusieurs endroits",
+
+  "commonCodeFrom": "Code commun à",
+
+  "hookCallParameter": "L'appel à {{hookName}} ne doit avoir qu'un seul paramètre",
+  "hookCallArrowFunction": "Le paramètre de {{hookName}} doit être une arrow function",
+  "defineFileScopesImport": "defineFileScopes doit être importé de '@charlesgilles/bdd-generator' avant tout appel",
+  "defineStepImport": "defineStep doit être importé de '@charlesgilles/bdd-generator' avant tout appel",
+  "onlyCallsInStepdefinitionFile": "defineFileScopes et defineStep ainsi que les hooks before / after each / all sont les seules fonctions qui peuvent être appelées dans ce fichier.",
+  "defineStepThirdParam": "Le callback d'une step doit être une arrow expression",
+  "defineFileScopesParam": "Le seul argument de defineFileScopes doit êre un tableau de IScope",
+  "invalidScope": "Le scope {{scope}} n'est pas valide, seuls 'feature', 'scenario' et 'tag' le sont. ligne {{line}}, colonne {{column}}",
+  "defineStepFirstParam": "Le premier paramètre de defineStep doit être un tableau de 'given', 'when' or 'then'",
+  "defineStepSecondParam": "Le second paramètre de defineStep doit être une string ou une regex",
+  "defineStepScopesParam": "Le quatrième paramètre de defineStep peut être un tableau de IScope",
+  "defineStepCall": "L'appel à defineStep doit avoir les paramètres suivants: blocks, match, callback, [scopes]",
+
+  "generationDate": "Fichier généré le"
+}

@@ -1,0 +1,39 @@
+{
+  "folderDoesntExists": "Folder \"{{stepsFrom}}\" doesn't exists. Thanks to correctily indicate the the file \"bdd-generator.json\".",
+  "tagCannotBeEmpty": "Param \"{{tag}}\" cannot be an empty string.",
+  "tagConflict": "Tags must be all différent.",
+  "fileSearchInFolder": "Recherche des fichiers \"{{files}}\" dans le dossier \"{{folder}}\"",
+  "parsingStepdefinitions": "Parsing stepdefinitions files, {{nbParsed}} stepDefinitions parsed",
+  "parsingFeatures": "Parsing feature files, {{nbParsed}} feature parsed",
+  "matchingFeaturesAndSteps": "Matching features with stepdefinitions",
+  "writtingSteps": "Writing steps files",
+  "numberOfWrittenSteps": "{{nbWritten}} steps files updated",
+  "executionTime": "Execution time",
+  "seconds": "seconds",
+  "miliseconds": "milliseconds",
+
+  "ignoredGeneration": "tag \"{{ignoreGenerationTag}}\" has been found in \"{{nbSkipped}}\" file.s. Those files will be ignored at generation.",
+  "onlyGeneration": "tag \"{{onlyGenerationTag}}\" has been found in \"{{nbFiles}}\" file.s. Only those files will be generated.",
+
+  "impossibleParse": "Impossible to parse corectly in file",
+  "impossibleBind": "Impossible to bind a step in file",
+  "noStepFound": "No step definition have been found.",
+  "sameStepFound": "Same step definition found",
+
+  "commonCodeFrom": "Common code for",
+
+  "hookCallParameter": "{{hookName}} call should have only one parameter",
+  "hookCallArrowFunction": "{{hookName}} only parameter should be an arrow function",
+  "defineFileScopesImport": "defineFileScopes should be imported from '@charlesgilles/bdd-generator' before any call",
+  "defineStepImport": "defineStep should be imported from '@charlesgilles/bdd-generator' before any call",
+  "onlyCallsInStepdefinitionFile": "defineFileScopes and defineStep are the only function that can be call in this file.",
+  "defineStepThirdParam": "Step callback should be an arrow expression",
+  "defineFileScopesParam": "first param of defineFileScopes should be an array of IScope",
+  "invalidScope": "{{scope}} is not a valid scope [feature, scenario, tag] on line {{line}} column {{column}}",
+  "defineStepFirstParam": "first param of defineStep call should be an array of 'given', 'when' or 'then'",
+  "defineStepSecondParam": "Second param of defineStep call should be a string or a regex",
+  "defineStepScopesParam": "Fourth param of defineStep can be an array of IScope",
+  "defineStepCall": "defineStep call should have these parameters: blocks, match, callback, [scopes]",
+
+  "generationDate": "File generated at"
+}

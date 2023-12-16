@@ -1,0 +1,16 @@
+{
+  "name": "@charlesgilles/bdd-generator-examples",
+  "version": "1.0.0",
+  "description": "Execute Gherkin scenarios in Vitest with only few features",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "test:generate": "bdd-generate",
+    "test": "vitest",
+    "vitest": "vitest --verbose"
+  },
+  "devDependencies": {
+    "@charlesgilles/bdd-generator": "file:../..",
+    "vite": "^4.0.4",
+    "vitest": "^0.26.3"
+  }
+}
