@@ -25,7 +25,38 @@ import { IScope, StepBlock, StepMatcher } from "./common.types";
  *  }
  * ]);
  */
-export function defineStep(blocks: StepBlock[], match: StepMatcher, cb: Function){}
+export function defineStep(blocks: StepBlock[], match: StepMatcher, cb: Function) { }
+
+/**
+ * Read .feature and .stepdefinitions.(js,ts,tsx,jsx) files,
+ * match given steps with those in feature files.
+ * Then it creates .specs.jsx files corresponding
+ *
+ * @param {StepMatcher} match The string or regex which defines the step.
+ * @param {Function} cb The function to call if this step is the only one to match and have the corresponding scopes
+ **/
+export function given(match: StepMatcher, cb: Function) { }
+/**
+ * Read .feature and .stepdefinitions.(js,ts,tsx,jsx) files,
+ * match when steps with those in feature files.
+ * Then it creates .specs.jsx files corresponding
+ * 
+ * For the same step used for multiple thing (given,when), use defineStep instead
+ *
+ * @param {StepMatcher} match The string or regex which defines the step.
+ * @param {Function} cb The function to call if this step is the only one to match and have the corresponding scopes
+ **/
+export function when(match: StepMatcher, cb: Function) { }
+/**
+ * Read .feature and .stepdefinitions.(js,ts,tsx,jsx) files,
+ * match then steps with those in feature files.
+ * Then it creates .specs.jsx files corresponding
+ *
+ * @param {StepMatcher} match The string or regex which defines the step.
+ * @param {Function} cb The function to call if this step is the only one to match and have the corresponding scopes
+ **/
+export function then(match: StepMatcher, cb: Function) { }
+
 
 /**
  * define common scopes for all steps defined in the file this function is called.
@@ -43,4 +74,4 @@ export function defineStep(blocks: StepBlock[], match: StepMatcher, cb: Function
  * 
  *  a step is a match if the feature is "Feat 1" OR if tags includes "tag 1"
  */
-export function defineFileScopes(scopes: IScope[]) {};
+export function defineFileScopes(scopes: IScope[]) { };
