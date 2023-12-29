@@ -44,7 +44,8 @@ interface CommonCode {
 interface ParseStepDefinitionResult {
     steps: StepDefinition[];
     hooks: Hook[];
-    commonCodes: CommonCode[];
+    rootCommonCodes: CommonCode[];
+    commonCodesWithScenarioContext: CommonCode[];
 }
 
 interface FileExtension {
@@ -70,7 +71,8 @@ interface Feature {
     tags: string[];
     scenarios: Scenario[];
     imports: Imports;
-    commonCodes: CommonCode[];
+    rootCommonCodes: CommonCode[];
+    commonCodesWithScenarioContext: CommonCode[];
     hooks: Hook[];
     steps: StepDefinition[];
     extension: 'js' | 'ts' | 'jsx' | 'tsx'
