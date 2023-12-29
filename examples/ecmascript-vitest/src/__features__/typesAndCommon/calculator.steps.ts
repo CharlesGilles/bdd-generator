@@ -1,9 +1,11 @@
-// Fichier généré le Sat, 16 Dec 2023 11:57:54 GMT
+// Fichier généré le Fri, 29 Dec 2023 13:16:12 GMT
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
 // Code commun à "./src/__features__/typesAndCommon/calculator1.stepdefinitions.ts"
 
 interface ITest {}
+
+// Fin du code commun à "./src/__features__/typesAndCommon/calculator1.stepdefinitions.ts"
 
 // Code commun à "./src/__features__/typesAndCommon/calculator2.stepdefinitions.ts"
 
@@ -22,10 +24,13 @@ function getOperator(operation: Operation) {
   }
 }
 
+// Fin du code commun à "./src/__features__/typesAndCommon/calculator2.stepdefinitions.ts"
+
 const feature = loadFeature('./src/__features__/typesAndCommon/calculator.feature');
 
 defineFeature(feature, (defineScenario) => {
 	let scenarioContext;
+
 	beforeEach(() => {
 		scenarioContext = {};
 	});
