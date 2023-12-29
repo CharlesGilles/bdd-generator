@@ -72,7 +72,7 @@ function getStepDefinitionBlocks(arg: (Expression | SpreadElement | JSXNamespace
 
 function getStepDefinitionMatch(arg: (Expression | SpreadElement | JSXNamespacedName | ArgumentPlaceholder)): StepMatcher {
     if (arg.type === 'RegExpLiteral') {
-        return new RegExp(arg.pattern);
+        return new RegExp(arg.pattern, arg.flags);
     } else if (arg.type === 'StringLiteral') {
         return arg.value;
     } else {
