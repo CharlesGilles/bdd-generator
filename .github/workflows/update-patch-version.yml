@@ -37,6 +37,6 @@ jobs:
 
       - name: Push changes
         run: |
-          git push origin HEAD:develop --follow-tags
+          git push origin HEAD:master --follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
