@@ -21,6 +21,7 @@
   "sameStepFound": "La step est définies à plusieurs endroits",
 
   "commonCodeFrom": "Code commun à",
+  "endCommonCodeFrom": "Fin du code commun à",
 
   "hookCallParameter": "L'appel à {{hookName}} ne doit avoir qu'un seul paramètre",
   "hookCallArrowFunction": "Le paramètre de {{hookName}} doit être une arrow function",
@@ -31,6 +32,7 @@
   "thenImport": "then doit être importé de '@charlesgilles/bdd-generator' avant tout appel",
   "onlyCallsInStepdefinitionFile": "defineFileScopes et defineStep ainsi que les hooks before / after each / all sont les seules fonctions qui peuvent être appelées dans ce fichier.",
   "defineStepThirdParam": "Le callback d'une step doit être une arrow expression",
+  "defineStepThirdParamWrongIdentifier": "Le callback d'une step doit être défini dans ce fichier et ne doit pas être importé",
   "defineFileScopesParam": "Le seul argument de defineFileScopes doit êre un tableau de IScope",
   "invalidScope": "Le scope {{scope}} n'est pas valide, seuls 'feature', 'scenario' et 'tag' le sont. ligne {{line}}, colonne {{column}}",
   "defineStepFirstParam": "Le premier paramètre de defineStep doit être un tableau de 'given', 'when' or 'then'",
