@@ -1,4 +1,4 @@
-// Fichier généré le Sat, 16 Dec 2023 11:57:55 GMT
+// Fichier généré le Fri, 29 Dec 2023 13:16:12 GMT
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { PasswordValidator } from '../../password-validator';
 
@@ -6,6 +6,7 @@ const feature = loadFeature('./src/__features__/basic-with-imports/basic-scenari
 
 defineFeature(feature, (defineScenario) => {
 	let scenarioContext;
+
 	beforeEach(() => {
 		scenarioContext = {};
 		scenarioContext.yolo = 10;

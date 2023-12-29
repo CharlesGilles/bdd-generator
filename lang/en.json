@@ -21,6 +21,7 @@
   "sameStepFound": "Same step definition found",
 
   "commonCodeFrom": "Common code for",
+  "endCommonCodeFrom": "End of common code for",
 
   "hookCallParameter": "{{hookName}} call should have only one parameter",
   "hookCallArrowFunction": "{{hookName}} only parameter should be an arrow function",
@@ -30,7 +31,8 @@
   "whenImport": "when should be imported from '@charlesgilles/bdd-generator' before any call",
   "thenImport": "then should be imported from '@charlesgilles/bdd-generator' before any call",
   "onlyCallsInStepdefinitionFile": "defineFileScopes and defineStep are the only function that can be call in this file.",
-  "defineStepThirdParam": "Step callback should be an arrow expression",
+  "defineStepThirdParam": "Step callback must be a function or arrow function",
+  "defineStepThirdParamWrongIdentifier": "Step callback must be defined in this file and not imported",
   "defineFileScopesParam": "first param of defineFileScopes should be an array of IScope",
   "invalidScope": "{{scope}} is not a valid scope [feature, scenario, tag] on line {{line}} column {{column}}",
   "defineStepFirstParam": "first param of defineStep call should be an array of 'given', 'when' or 'then'",

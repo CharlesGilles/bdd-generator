@@ -7,7 +7,8 @@ const writeFileOptions: fs.WriteFileOptions = {
 };
 
 export type Hash = {
-    commonCodes?: string,
+    rootCommonCodes?: string,
+    commonCodesWithScenarioContext?: string,
     hooks?: string
     steps?: string
     scenarios?: string
@@ -16,13 +17,14 @@ export type Hash = {
 }
 
 export function GenerateHashes(feature: Feature) {
-    const commonCodes = generateMd5Hash(feature.commonCodes.join(''));
+    const rootCommonCodes = generateMd5Hash(feature.rootCommonCodes.join(''));
+    const commonCodesWithScenarioContext = generateMd5Hash(feature.commonCodesWithScenarioContext.join(''));
     const hooksCodes = generateMd5Hash(feature.hooks.map(hook => hook.code.join('')).join(''));
     const steps = generateMd5Hash(feature.steps.map(step => step.functionName).join(''));
     const scenarios = generateMd5Hash(feature.scenarios.map(scenario => scenario.nom).join(''));
     const tags = generateMd5Hash(feature.tags.join(''));
     const imports = generateMd5Hash([...feature.imports].join(''));
-    return { commonCodes, hooksCodes, steps, scenarios, tags, imports };
+    return { rootCommonCodes, commonCodesWithScenarioContext, hooksCodes, steps, scenarios, tags, imports };
 }
 
 function writeFileCallback(error: NodeJS.ErrnoException | null) {

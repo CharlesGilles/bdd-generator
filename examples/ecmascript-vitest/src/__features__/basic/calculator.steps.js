@@ -1,10 +1,19 @@
-// Fichier généré le Sat, 16 Dec 2023 11:57:55 GMT
+// Fichier généré le Fri, 29 Dec 2023 13:16:12 GMT
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
 const feature = loadFeature('./src/__features__/basic/calculator.feature');
 
 defineFeature(feature, (defineScenario) => {
 	let scenarioContext;
+
+	// Code commun à "./src/__features__/basic/calculator.stepdefinitions.js"
+
+	const iMultipleThem = function () {
+	  scenarioContext.result = scenarioContext.numbers[0] * scenarioContext.numbers[1];
+	};
+
+	// Fin du code commun à "./src/__features__/basic/calculator.stepdefinitions.js"
+
 	beforeEach(() => {
 		scenarioContext = {};
 	});
@@ -20,7 +29,7 @@ defineFeature(feature, (defineScenario) => {
 	}
 
 	function IAddThem(defineMethod){
-		defineMethod(/^I add them$/, () => {
+		defineMethod(/^I add them$/, function () {
 			scenarioContext.result = scenarioContext.numbers[0] + scenarioContext.numbers[1];
 		});
 	}
@@ -32,9 +41,7 @@ defineFeature(feature, (defineScenario) => {
 	}
 
 	function IMultipleThem(defineMethod){
-		defineMethod(/^I multiple them$/, () => {
-			scenarioContext.result = scenarioContext.numbers[0] * scenarioContext.numbers[1];
-		});
+		defineMethod(/^I multiple them$/, iMultipleThem);
 	}
 
 	defineScenario('Simple addition', ({ given, when, then}) => {

@@ -131,7 +131,8 @@ export function matchFeatureWithStepsAndHooks(
         tags: feature.tags,
         imports: featureImports,
         hooks: matchFeatureHooks(feature, parseStepsResult.hooks),
-        commonCodes: matchFeatureCommonCodes(feature, parseStepsResult.commonCodes),
+        rootCommonCodes: matchFeatureCommonCodes(feature, parseStepsResult.rootCommonCodes),
+        commonCodesWithScenarioContext: matchFeatureCommonCodes(feature, parseStepsResult.commonCodesWithScenarioContext),
         steps: featureSteps,
         scenarios: scenariosWithSteps,
         extension: getFeatureFileExtension(featureSteps)

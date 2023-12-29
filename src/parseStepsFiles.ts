@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { parse as parseFile } from '@babel/parser';
-import { ArgumentPlaceholder, ArrayExpression, CallExpression, Expression, Identifier, JSXNamespacedName, ObjectExpression, SourceLocation, SpreadElement } from '@babel/types';
+import { ArgumentPlaceholder, ArrayExpression, CallExpression, Expression, Identifier, JSXNamespacedName, ObjectExpression, SourceLocation, SpreadElement, Statement, VariableDeclaration } from '@babel/types';
 import { Imports, IScope, StepDefinition, StepBlock, StepMatcher, HookName, ParseStepDefinitionResult, Hook, CommonCode } from './common.types';
 import { findAllFilesWithMatch } from './findAllFilesWithMatch';
 import { formatStepsFileParsingError } from './errors';
@@ -80,12 +80,19 @@ function getStepDefinitionMatch(arg: (Expression | SpreadElement | JSXNamespaced
     }
 }
 
-function getStepDefititionCallback(arg: (Expression | SpreadElement | JSXNamespacedName | ArgumentPlaceholder)): string {
-    if (arg.type !== 'ArrowFunctionExpression') {
-        throw createFormatStepsFileParsingError(arg.loc, translation.get('defineStepThirdParam'));
+function getStepDefititionCallback(arg: (Expression | SpreadElement | JSXNamespacedName | ArgumentPlaceholder), usableFunctionsForSteps: string[]): string {
+    if (arg.type === 'ArrowFunctionExpression' || arg.type === 'FunctionExpression') {
+        return generate(arg).code;
     }
-
-    return generate(arg).code;
+    if (arg.type === 'Identifier'){
+        if (usableFunctionsForSteps.includes(arg.name)) {
+            return arg.name;
+        }
+        else {
+            throw createFormatStepsFileParsingError(arg.loc, translation.get('defineStepThirdParamWrongIdentifier'));
+        }
+    }
+    throw createFormatStepsFileParsingError(arg.loc, translation.get('defineStepThirdParam'));
 }
 
 function getStepDefitionScopes(arg: (Expression | SpreadElement | JSXNamespacedName | ArgumentPlaceholder)): IScope[] {
@@ -106,7 +113,7 @@ function createFunctionName(match: StepMatcher): string {
         .join('');
 }
 
-function getStepDefinition(cheminFichier: string, defineStep: CallExpression, stepBlock?: StepBlock): Omit<StepDefinition, 'imports'>[] {
+function getStepDefinition(usableFunctionsForSteps: string[], defineStep: CallExpression, stepBlock?: StepBlock): Omit<StepDefinition, 'imports'>[] {
     if (![2,3,4].includes(defineStep.arguments.length)) {
         throw createFormatStepsFileParsingError(defineStep.loc, translation.get('defineStepCall'));
     }
@@ -116,12 +123,12 @@ function getStepDefinition(cheminFichier: string, defineStep: CallExpression, st
     }
     const match = getStepDefinitionMatch(defineStep.arguments[stepBlock ? 0 : 1]);
     const functionName = createFunctionName(match);
-    const callback = getStepDefititionCallback(defineStep.arguments[stepBlock ? 1 : 2]);
+    const callback = getStepDefititionCallback(defineStep.arguments[stepBlock ? 1 : 2], usableFunctionsForSteps);
     const scopes = defineStep.arguments.length === 4
         ? getStepDefitionScopes(defineStep.arguments[stepBlock ? 2 : 3])
         : [];
 
-    const fileExtension = cheminFichier.substring(cheminFichier.lastIndexOf('.') + 1);
+    const fileExtension = cheminFichierEnCours.substring(cheminFichierEnCours.lastIndexOf('.') + 1);
 
 
     return blocks.map(block => ({
@@ -131,7 +138,7 @@ function getStepDefinition(cheminFichier: string, defineStep: CallExpression, st
         callback,
         scopes,
         functionName,
-        cheminFichier,
+        cheminFichier: cheminFichierEnCours,
         fileExtension: {
             jsx: fileExtension.endsWith('x'),
             ts: fileExtension.startsWith('t')
@@ -148,7 +155,7 @@ function removePackageImports(imports: Imports) {
     }
 }
 
-function getHook(cheminFichier: string, hookCall: CallExpression): Partial<Hook> {
+function getHook(hookCall: CallExpression): Partial<Hook> {
     const hookName = (hookCall.callee as Identifier).name;
     if (hookCall.arguments.length !== 1) {
         throw createFormatStepsFileParsingError(hookCall.loc, translation.get('hookCallParameter', { hookName }));
@@ -189,7 +196,27 @@ function fillWithScopes(scopables: { scopes?: IScope[] }[], fileScopes: IScope[]
     });
 }
 
-type ParseOneStepDefinitionResult = Omit<ParseStepDefinitionResult, 'commonCodes'> & { commonCode?: CommonCode };
+function isFunctionDeclaration(x: VariableDeclaration) {
+    return x.declarations.length === 1
+        && x.declarations[0].type === 'VariableDeclarator'
+        && x.declarations[0].id.type === 'Identifier'
+        && (
+            x.declarations[0].init.type === 'ArrowFunctionExpression'
+            || x.declarations[0].init.type === 'FunctionExpression'
+        );
+}
+
+function pushCommonCode(rootCommonCode: string[], commonCodeWithScenarioContext: string[], x: Statement){
+    const code = generate(x).code;
+    if (code.includes('scenarioContext')) {
+        commonCodeWithScenarioContext.push(code);
+    } else {
+        rootCommonCode.push(code);
+    }
+}
+
+type ParseOneStepDefinitionResult = Omit<ParseStepDefinitionResult, 'rootCommonCodes' | 'commonCodesWithScenarioContext'> 
+    & { rootCommonCode: CommonCode, commonCodeWithScenarioContext: CommonCode };
 
 function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
     cheminFichierEnCours = cheminFichier;
@@ -207,7 +234,9 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
     const imports: Imports = new Map<string, string[]>();
     const stepDefinitions: Partial<StepDefinition>[] = [];
     const hooks: Partial<Hook>[] = [];
-    const commonCode: string[] = [];
+    const rootCommonCode: string[] = [];
+    const commonCodeWithScenarioContext: string[] = [];
+    const usableFunctionsForSteps: string[] = [];
 
     ast.program.body.forEach(x => {
         switch (x.type) {
@@ -219,57 +248,56 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
                 }
                 importsValues.push(...x.specifiers.map(specifier => specifier.local.name));
                 break;
+            case 'VariableDeclaration':
+                if (isFunctionDeclaration(x)) {   
+                    usableFunctionsForSteps.push((x.declarations[0].id as Identifier).name);
+                }
+                pushCommonCode(rootCommonCode, commonCodeWithScenarioContext, x);
+                break;
             case 'ExpressionStatement':
                 if (x.expression.type !== 'CallExpression' || x.expression.callee.type !== 'Identifier') {
-                    commonCode.push(generate(x).code);
+                    pushCommonCode(rootCommonCode, commonCodeWithScenarioContext, x);
+                    break;
                 }
-                else {
-                    switch (x.expression.callee.name) {
-                        case 'defineFileScopes':
-                            if (!imports.get(packageName)?.includes('defineFileScopes')) {
-                                throw createFormatStepsFileParsingError(x.loc, translation.get('defineFileScopesImport'));
-                            }
-                            fileScopes = getFileScopes(x.expression);
-                            break;
-                        case 'defineStep':
-                            if (!imports.get(packageName)?.includes('defineStep')) {
-                                throw createFormatStepsFileParsingError(x.loc, translation.get('defineStepImport'));
-                            }
-                            stepDefinitions.push(...getStepDefinition(cheminFichier, x.expression));
-                            break;
-                        case 'beforeAll':
-                        case 'beforeEach':
-                        case 'afterEach':
-                        case 'afterAll':
-                            hooks.push(getHook(cheminFichier, x.expression));
-                            break;
-                        case 'given':
-                        case 'when':
-                        case 'then':
-                            if (!imports.get(packageName)?.includes(x.expression.callee.name)) {
-                                throw createFormatStepsFileParsingError(x.loc, translation.get(`${x.expression.callee.name}Import`));
-                            }
-                            stepDefinitions.push(...getStepDefinition(cheminFichier, x.expression, x.expression.callee.name));
-                            break;
-                        default:
-                            throw createFormatStepsFileParsingError(x.loc, translation.get('onlyCallsInStepdefinitionFile'));
-                    }
+                switch (x.expression.callee.name) {
+                    case 'defineFileScopes':
+                        if (!imports.get(packageName)?.includes('defineFileScopes')) {
+                            throw createFormatStepsFileParsingError(x.loc, translation.get('defineFileScopesImport'));
+                        }
+                        fileScopes = getFileScopes(x.expression);
+                        break;
+                    case 'defineStep':
+                        if (!imports.get(packageName)?.includes('defineStep')) {
+                            throw createFormatStepsFileParsingError(x.loc, translation.get('defineStepImport'));
+                        }
+                        stepDefinitions.push(...getStepDefinition(usableFunctionsForSteps, x.expression));
+                        break;
+                    case 'beforeAll':
+                    case 'beforeEach':
+                    case 'afterEach':
+                    case 'afterAll':
+                        hooks.push(getHook(x.expression));
+                        break;
+                    case 'given':
+                    case 'when':
+                    case 'then':
+                        if (!imports.get(packageName)?.includes(x.expression.callee.name)) {
+                            throw createFormatStepsFileParsingError(x.loc, translation.get(`${x.expression.callee.name}Import`));
+                        }
+                        stepDefinitions.push(...getStepDefinition(usableFunctionsForSteps, x.expression, x.expression.callee.name));
+                        break;
+                    default:
+                        throw createFormatStepsFileParsingError(x.loc, translation.get('onlyCallsInStepdefinitionFile'));
                 }
                 break;
             default:
-                commonCode.push(generate(x).code);
+                pushCommonCode(rootCommonCode, commonCodeWithScenarioContext, x);
                 break;
         }
     });
 
-    let resultCommonCode: CommonCode;
-    if (commonCode.length > 0) {
-        resultCommonCode = {
-            filename: cheminFichier,
-            scopes: fileScopes,
-            code: commonCode.join('\n')
-        };
-    }
+    const resultRootCommonCode = formatCommonCode(rootCommonCode, cheminFichier, fileScopes);
+    const resultCommonCodeWithScenarioContext = formatCommonCode(commonCodeWithScenarioContext, cheminFichier, fileScopes);
 
     removePackageImports(imports);
     fillStepDefinitionsWithImports(stepDefinitions, fileScopes, imports);
@@ -278,8 +306,21 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
     return {
         steps: stepDefinitions as StepDefinition[],
         hooks: hooks as Hook[],
-        commonCode: resultCommonCode
+        rootCommonCode: resultRootCommonCode,
+        commonCodeWithScenarioContext: resultCommonCodeWithScenarioContext
     }
+}
+
+function formatCommonCode(rootCommonCode: string[], cheminFichier: string, fileScopes: IScope[]) {
+    let resultCommonCode: CommonCode;
+    if (rootCommonCode.length > 0) {
+        resultCommonCode = {
+            filename: cheminFichier,
+            scopes: fileScopes,
+            code: rootCommonCode.join('\n')
+        };
+    }
+    return resultCommonCode;
 }
 
 function findAllStepsFiles(from: fs.PathLike): string[] {
@@ -290,12 +331,14 @@ function parseStepsFiles(from: fs.PathLike): ParseStepDefinitionResult {
     const parsed = findAllStepsFiles(from).map(cheminFichier => parseOneStepFile(cheminFichier));
     const hooks = parsed.flatMap(p => p.hooks);
     const steps = parsed.flatMap(p => p.steps);
-    const commonCodes = parsed.map(p => p.commonCode).filter(p => Boolean(p));
+    const rootCommonCodes = parsed.map(p => p.rootCommonCode).filter(p => Boolean(p));
+    const commonCodesWithScenarioContext = parsed.map(p => p.commonCodeWithScenarioContext).filter(p => Boolean(p));
 
     return {
         hooks,
         steps,
-        commonCodes
+        rootCommonCodes,
+        commonCodesWithScenarioContext
     };
 }
 

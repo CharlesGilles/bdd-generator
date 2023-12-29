@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { CommonCode, ExecutionType, Feature, Hook, HookName } from "./common.types";
 import translation from './translation';
-import { GenerateHashes, Hash, createHashFile, generateMd5Hash, getHashFromFile } from './hashgenerator';
+import { GenerateHashes, Hash, createHashFile, getHashFromFile } from './hashgenerator';
 import kleur from "kleur"
 
 const writeFileOptions: fs.WriteFileOptions = {
@@ -29,11 +29,12 @@ function writeImports(data: string[], feature: Feature) {
     data.push('');
 }
 
-function writeCommonCodes(data: string[], commonCodes: CommonCode[]) {
+function writeRootCommonCodes(data: string[], commonCodes: CommonCode[]) {
     for (const commonCode of commonCodes) {
         data.push(`// ${translation.get('commonCodeFrom')} "${commonCode.filename}"\n`);
         data.push(commonCode.code);
         data.push('');
+        data.push(`// ${translation.get('endCommonCodeFrom')} "${commonCode.filename}"\n`);
     }
 }
 
@@ -41,7 +42,17 @@ function writeFeatureContext(data: string[], feature: Feature) {
     data.push(`const feature = loadFeature('${feature.cheminFichier}');
 
 defineFeature(feature, (defineScenario) => {
-	let scenarioContext;`);
+	let scenarioContext;
+`);
+}
+
+function writeCommonCodesWithScenarioContext(data: string[], commonCodes: CommonCode[]) {
+    for (const commonCode of commonCodes) {
+        data.push(`\t// ${translation.get('commonCodeFrom')} "${commonCode.filename}"\n`);
+        data.push(commonCode.code.split('\n').map(l => `\t${l}`).join('\n'));
+        data.push('');
+        data.push(`\t// ${translation.get('endCommonCodeFrom')} "${commonCode.filename}"\n`);
+    }
 }
 
 function escapeApostrophes(chaine: string) {
@@ -74,20 +85,20 @@ function writeSteps(data: string[], feature: Feature) {
     feature.steps.forEach(step => {
         data.push(`\tfunction ${step.functionName}(defineMethod){`);
         const codeLines = step.callback.split('\n').map(l => l.trim());
-        let i = 0;
-        for (let line of codeLines) {
-            if (i === 0) {
+
+        codeLines.forEach((line, index) => {
+            if (index === 0) {
                 const match = typeof (step.match) === 'string'
                     ? "'" + escapeApostrophes(step.match) + "'"
                     : step.match;
-                data.push(`\t\tdefineMethod(${match}, ${line}`);
-            } else if (i === codeLines.length - 1) {
+                const eol = codeLines.length === 1 ? ');' : '';
+                data.push(`\t\tdefineMethod(${match}, ${line}${eol}`);
+            } else if (index === codeLines.length - 1) {
                 data.push(`\t\t${line});`);
             } else {
                 data.push(`\t\t\t${line}`);
             }
-            i++;
-        }
+        });
         data.push('\t}\n');
     });
 }
@@ -119,7 +130,8 @@ function writeEndFile(data: string[]) {
 }
 
 function checkHashes(featureName: string, featureHashes: Hash){
-    return hashes[featureName]?.commonCodes === featureHashes.commonCodes
+    return hashes[featureName]?.rootCommonCodes === featureHashes.rootCommonCodes
+        && hashes[featureName]?.commonCodesWithScenarioContext === featureHashes.commonCodesWithScenarioContext
         && hashes[featureName]?.hooks === featureHashes.hooks
         && hashes[featureName]?.steps === featureHashes.steps
         && hashes[featureName]?.scenarios === featureHashes.scenarios
@@ -138,8 +150,9 @@ function createSpecsFile(feature: Feature, forceRegenerateSteps: boolean) {
 
     writeHeadComment(data, new Date().toUTCString());
     writeImports(data, feature);
-    writeCommonCodes(data, feature.commonCodes);
+    writeRootCommonCodes(data, feature.rootCommonCodes);
     writeFeatureContext(data, feature);
+    writeCommonCodesWithScenarioContext(data, feature.commonCodesWithScenarioContext);
     writeHooks(data, feature.hooks);
     writeSteps(data, feature);
     writeTests(data, feature);

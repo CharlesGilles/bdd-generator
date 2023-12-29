@@ -18,13 +18,15 @@ defineStep(["given"], /^the number "(.*)"$/, (value) => {
   }
 });
 
-defineStep(["when"], /^I add them$/, () => {
+defineStep(["when"], /^I add them$/, function(){
   scenarioContext.result = scenarioContext.numbers[0] + scenarioContext.numbers[1];
 });
 
-defineStep(["when"], /^I multiple them$/, () => {
+const iMultipleThem = function(){
   scenarioContext.result = scenarioContext.numbers[0] * scenarioContext.numbers[1];
-});
+}
+
+defineStep(["when"], /^I multiple them$/, iMultipleThem);
 
 defineStep(["then"], /^the result should be "(.*)"$/, result => {
     expect(scenarioContext.result).toBe(Number(result));
