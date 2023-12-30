@@ -1,4 +1,5 @@
 {
     "lang": "fr",
-    "steps": "./src/__features__"
+    "steps": "./src/__features__",
+    "forceStepsRegeneration": true
 }
