@@ -11,7 +11,7 @@ interface FromType {
     onlyGenerationTag?: string;
     ignoreExecutionTag: string;
     onlyExecutionTag: string;
-    forceRegenerateSteps?: boolean;
+    forceStepsRegeneration?: boolean;
 }
 
 let from: FromType = null;
@@ -30,7 +30,7 @@ const ignoreGenerationTag = from?.ignoreGenerationTag?.trim() ?? 'ignore-generat
 const onlyGenerationTag = from?.onlyGenerationTag?.trim() ?? 'only-generation';
 const ignoreExecutionTag = from?.ignoreExecutionTag?.trim() ?? 'ignore';
 const onlyExecutionTag = from?.onlyExecutionTag?.trim() ?? 'only';
-const forceRegenerateSteps = from?.forceRegenerateSteps ?? false;
+const forceStepsRegeneration = from?.forceStepsRegeneration ?? false;
 
 if (!translator.setTranslation(lang)){
     console.error("cannot print correct logs, exiting.");
@@ -63,7 +63,7 @@ if (new Set([ignoreExecutionTag, ignoreGenerationTag, onlyExecutionTag, onlyGene
 createStepsFilesFromStepDefinitionsAndFeatures(
     stepsFrom,
     featuresFrom,
-    forceRegenerateSteps,
+    forceStepsRegeneration,
     '@' + ignoreGenerationTag,
     '@' + onlyGenerationTag,
     '@' + ignoreExecutionTag,
