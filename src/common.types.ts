@@ -2,7 +2,10 @@ type StepMatcher = string | RegExp;
 
 type StepBlock = 'given' | 'when' | 'then'; 
 
-type Imports = Map<string, string[]>;
+type Imports = Map<string, {
+    nammedImports: string[];
+    sourceFile: string;
+}>;
 
 interface IScope {
     feature?: string;

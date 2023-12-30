@@ -147,11 +147,12 @@ function getStepDefinition(usableFunctionsForSteps: string[], defineStep: CallEx
 }
 
 function removePackageImports(imports: Imports) {
-    const packageImports = imports.get(packageName).filter(i => !importsToDelete.includes(i));
-    if (packageImports.length === 0) {
+    const bddGeneratorImports = imports.get(packageName);  
+    const nammedImports = bddGeneratorImports.nammedImports.filter(i => !importsToDelete.includes(i));
+    if (nammedImports.length === 0) {
         imports.delete(packageName);
     } else {
-        imports.set(packageName, packageImports);
+        imports.set(packageName, { nammedImports, sourceFile: bddGeneratorImports.sourceFile });
     }
 }
 
@@ -182,8 +183,8 @@ function fillStepDefinitionsWithImports(stepDefinitions: Partial<StepDefinition>
     stepDefinitions.forEach(stepDefinition => {
         stepDefinition.scopes.push(...fileScopes);
 
-        imports.forEach((values, from, map) => {
-            map.set(from, [...new Set(values)]);
+        imports.forEach(({sourceFile, nammedImports }, from, map) => {
+            map.set(from, { sourceFile, nammedImports: [...new Set(nammedImports)] });
         });
 
         stepDefinition.imports = imports;
@@ -231,7 +232,7 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
     });
 
     let fileScopes: IScope[];
-    const imports: Imports = new Map<string, string[]>();
+    const imports: Imports = new Map<string, { nammedImports: string[]; sourceFile: string }>();
     const stepDefinitions: Partial<StepDefinition>[] = [];
     const hooks: Partial<Hook>[] = [];
     const rootCommonCode: string[] = [];
@@ -241,12 +242,12 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
     ast.program.body.forEach(x => {
         switch (x.type) {
             case 'ImportDeclaration':
-                let importsValues = imports.get(x.source.value);
-                if (!importsValues) {
-                    importsValues = [];
-                    imports.set(x.source.value, importsValues);
+                let nammedImports = imports.get(x.source.value)?.nammedImports;
+                if (!nammedImports) {
+                    nammedImports = [];
+                    imports.set(x.source.value, { sourceFile: cheminFichier, nammedImports });
                 }
-                importsValues.push(...x.specifiers.map(specifier => specifier.local.name));
+                nammedImports.push(...x.specifiers.map(specifier => specifier.local.name));
                 break;
             case 'VariableDeclaration':
                 if (isFunctionDeclaration(x)) {   
@@ -261,13 +262,13 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
                 }
                 switch (x.expression.callee.name) {
                     case 'defineFileScopes':
-                        if (!imports.get(packageName)?.includes('defineFileScopes')) {
+                        if (!imports.get(packageName)?.nammedImports?.includes('defineFileScopes')) {
                             throw createFormatStepsFileParsingError(x.loc, translation.get('defineFileScopesImport'));
                         }
                         fileScopes = getFileScopes(x.expression);
                         break;
                     case 'defineStep':
-                        if (!imports.get(packageName)?.includes('defineStep')) {
+                        if (!imports.get(packageName)?.nammedImports?.includes('defineStep')) {
                             throw createFormatStepsFileParsingError(x.loc, translation.get('defineStepImport'));
                         }
                         stepDefinitions.push(...getStepDefinition(usableFunctionsForSteps, x.expression));
@@ -281,7 +282,7 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
                     case 'given':
                     case 'when':
                     case 'then':
-                        if (!imports.get(packageName)?.includes(x.expression.callee.name)) {
+                        if (!imports.get(packageName)?.nammedImports?.includes(x.expression.callee.name)) {
                             throw createFormatStepsFileParsingError(x.loc, translation.get(`${x.expression.callee.name}Import`));
                         }
                         stepDefinitions.push(...getStepDefinition(usableFunctionsForSteps, x.expression, x.expression.callee.name));
