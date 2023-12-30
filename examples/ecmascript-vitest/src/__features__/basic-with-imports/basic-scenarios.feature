@@ -8,4 +8,5 @@ Feature: Logging in
         Then I should be granted access
 
     Scenario: test tolo
+        Given YOLO
         Then YOLO
