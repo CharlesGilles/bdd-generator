@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { parse as parseFile } from '@babel/parser';
 import { ArgumentPlaceholder, ArrayExpression, CallExpression, Expression, Identifier, JSXNamespacedName, ObjectExpression, SourceLocation, SpreadElement, Statement, VariableDeclaration } from '@babel/types';
-import { Imports, IScope, StepDefinition, StepBlock, StepMatcher, HookName, ParseStepDefinitionResult, Hook, CommonCode } from './common.types';
+import { Imports, IScope, StepDefinition, StepBlock, StepMatcher, HookName, ParseStepDefinitionResult, Hook, CommonCode, ImportsData } from './common.types';
 import { findAllFilesWithMatch } from './findAllFilesWithMatch';
 import { formatStepsFileParsingError } from './errors';
 import translation from './translation';
@@ -182,8 +182,8 @@ function fillStepDefinitionsWithImports(stepDefinitions: Partial<StepDefinition>
     stepDefinitions.forEach(stepDefinition => {
         stepDefinition.scopes.push(...fileScopes);
 
-        imports.forEach(({sourceFile, nammedImports }, from, map) => {
-            map.set(from, { sourceFile, nammedImports: [...new Set(nammedImports)] });
+        imports.forEach(({sourceFile, defaultImport, nammedImports }, from, map) => {
+            map.set(from, { sourceFile, defaultImport, nammedImports: [...new Set(nammedImports)] });
         });
 
         stepDefinition.imports = imports;
@@ -231,7 +231,7 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
     });
 
     let fileScopes: IScope[];
-    const imports: Imports = new Map<string, { nammedImports: string[]; sourceFile: string }>();
+    const imports: Imports = new Map<string, ImportsData>();
     const stepDefinitions: Partial<StepDefinition>[] = [];
     const hooks: Partial<Hook>[] = [];
     const rootCommonCode: string[] = [];
@@ -240,13 +240,17 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
 
     ast.program.body.forEach(x => {
         switch (x.type) {
-            case 'ImportDeclaration':
-                let nammedImports = imports.get(x.source.value)?.nammedImports;
-                if (!nammedImports) {
-                    nammedImports = [];
-                    imports.set(x.source.value, { sourceFile: cheminFichier, nammedImports });
+            case 'ImportDeclaration': 
+                let importsData = imports.get(x.source.value);
+                if (!importsData) {
+                    importsData = { sourceFile: cheminFichier, nammedImports: [] };
+                    imports.set(x.source.value, importsData);
                 }
-                nammedImports.push(...x.specifiers.map(specifier => specifier.local.name));
+                importsData.nammedImports.push(...x.specifiers.filter(specifier => specifier.type === 'ImportSpecifier').map(specifier => specifier.local.name));
+                const defaultImport = x.specifiers.find(specifier => specifier.type === 'ImportDefaultSpecifier');
+                if (defaultImport){
+                    importsData.defaultImport = defaultImport.local.name;
+                }
                 break;
             case 'VariableDeclaration':
                 if (isFunctionDeclaration(x)) {   

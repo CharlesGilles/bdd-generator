@@ -3,7 +3,6 @@ import { CommonCode, ExecutionType, Feature, Hook, HookName } from "./common.typ
 import translation from './translation';
 import { GenerateHashes, Hash, createHashFile, getHashFromFile } from './hashgenerator';
 import kleur from "kleur"
-import path from 'path';
 
 const writeFileOptions: fs.WriteFileOptions = {
     encoding: 'utf-8'
@@ -22,19 +21,14 @@ function writeHeadComment(data: string[], date: string) {
     data.push(`// ${translation.get('generationDate')} ${date}`);
 }
 
-function calculateNewPath(from: string, sourceFile: string, featureFile: string){
-    if (path.isAbsolute(from)){
-        return from;
-    }
-    const relativePath = path.relative(path.dirname(featureFile), path.dirname(sourceFile));
-    return path.posix.join(relativePath, from);
-}
-
 function writeImports(data: string[], feature: Feature) {
     data.push("import { defineFeature, loadFeature } from 'jest-cucumber';");
-    for (const [from, { nammedImports, sourceFile }] of feature.imports.entries()) {
-        const newFrom = calculateNewPath(from, sourceFile, feature.cheminFichier);
-        data.push(`import { ${[...nammedImports].join(', ')} } from '${newFrom}';`);
+    for (const [from, { nammedImports, defaultImport, sourceFile }] of feature.imports.entries()) {
+        console.log(feature.cheminFichier, from, nammedImports, defaultImport, sourceFile);
+        const defaultImportString = defaultImport ?? '';
+        const nammedImportsString = nammedImports.length !== 0 ? `{ ${[...nammedImports].join(', ')} }` : '';
+        const importsSeparator = defaultImportString && nammedImportsString ? ',' : '';
+        data.push(`import ${defaultImportString}${importsSeparator}${nammedImportsString} from '${from}';`);
     }
     data.push('');
 }

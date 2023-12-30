@@ -1,6 +1,7 @@
 import { ParsedFeature, ParsedScenario } from 'jest-cucumber/dist/src/models';
-import { Feature, Imports, StepDefinition, Scenario, StepBlock, ParseStepDefinitionResult, IScope, ExecutionType, Hook, CommonCode } from "./common.types";
-import { formatStepMatchingError } from "./errors";
+import { Feature, Imports, StepDefinition, Scenario, StepBlock, ParseStepDefinitionResult, IScope, ExecutionType, Hook, CommonCode, ImportsData } from "./common.types";
+import { formatStepMatchingError, formatTwoDefaultImportsError } from "./errors";
+import path from 'path';
 
 const stepblocks = ['given', 'when', 'then'];
 
@@ -49,6 +50,14 @@ const stepsAlreadyInFeatureSteps = (stepDefinition: StepDefinition, scenarioStep
     scenarioStep => scenarioStep.index === stepDefinition.index
 );
 
+function calculateNewPath(from: string, sourceFile: string, featureFile: string){
+    if (path.isAbsolute(from)){
+        return from;
+    }
+    const relativePath = path.relative(path.dirname(featureFile), path.dirname(sourceFile));
+    return path.posix.join(relativePath, from);
+}
+
 export function matchFeatureWithStepsAndHooks(
     cheminFichier: string,
     feature: ParsedFeature,
@@ -57,7 +66,7 @@ export function matchFeatureWithStepsAndHooks(
     onlyExecutionTag: string
 ): Feature {
     const featureSteps: StepDefinition[] = [];
-    const featureImports: Imports = new Map<string, { nammedImports: string[]; sourceFile: string }>();
+    const featureImports: Imports = new Map<string, ImportsData>();
     const scenariosWithSteps: Scenario[] = [];
 
     function matchScenariosSteps(scenarios: ParsedScenario[]) {
@@ -101,21 +110,38 @@ export function matchFeatureWithStepsAndHooks(
                     functionName: stepDefinition.functionName
                 });
 
-                stepDefinition.imports.forEach(({ nammedImports, sourceFile }, from) => {
-                    let importsValues: string[];
-                    if (!featureImports.has(from)) {
-                        importsValues = [];
-                        featureImports.set(from, { sourceFile, nammedImports: importsValues });
-                    } else {
-                        importsValues = featureImports.get(from)?.nammedImports;
+                stepDefinition.imports.forEach((stepImportData, from) => {
+                    const newFrom = calculateNewPath(from, stepDefinition.cheminFichier, cheminFichier);
+                    let featureImportsData = featureImports.get(newFrom);
+
+                    if (featureImportsData === undefined) {
+                        featureImportsData = stepImportData;
+                        featureImports.set(newFrom, stepImportData);
+                        return;
                     }
-                    nammedImports.forEach((value) => {
-                        importsValues.push(value);
+
+                    if (stepImportData.defaultImport){
+                        if (featureImportsData.defaultImport && featureImportsData.defaultImport !== stepImportData.defaultImport){
+                            throw new Error(formatTwoDefaultImportsError(
+                                newFrom,
+                                featureImportsData.defaultImport,
+                                stepImportData.defaultImport,
+                                cheminFichier,
+                                stepDefinition.cheminFichier
+                            ));
+                        }
+                        else {
+                            featureImportsData.defaultImport = stepImportData.defaultImport;
+                        }
+                    }
+
+                    stepImportData.nammedImports.forEach((value) => {
+                        featureImportsData.nammedImports.push(value);
                     });
                 });
 
-                featureImports.forEach(({ nammedImports, sourceFile }, from, map) => {
-                    map.set(from, { sourceFile, nammedImports: [...new Set(nammedImports)] });
+                featureImports.forEach(({ nammedImports, defaultImport, sourceFile }, from, map) => {
+                    map.set(from, { sourceFile, defaultImport, nammedImports: [...new Set(nammedImports)] });
                 });
             });
             scenariosWithSteps.push(scenarioWithSteps);

@@ -19,6 +19,7 @@
   "impossibleBind": "Impossible de faire correspondre une step du fichier",
   "noStepFound": "Aucune step correspondante.",
   "sameStepFound": "La step est définies à plusieurs endroits",
+  "defaultImportWithMultipleNames": "L'import par défaut suivant est nommé de différentes manières dans différents fichiers",
 
   "commonCodeFrom": "Code commun à",
   "endCommonCodeFrom": "Fin du code commun à",

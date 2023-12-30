@@ -1,5 +1,5 @@
 import { defineStep, defineFileScopes, scenarioContext } from "@charlesgilles/bdd-generator";
-import { fonctionImportee } from './fonctionImportee';
+import importParDefaut, { fonctionImportee } from './fonctionImportee';
 
 defineFileScopes([
     {
@@ -13,5 +13,6 @@ beforeEach(() => {
 
 defineStep(["given", "then"], "YOLO", () => {
   fonctionImportee();
+  expect(importParDefaut).toBe(1);
   expect(scenarioContext.yolo).toBe(10);
 });

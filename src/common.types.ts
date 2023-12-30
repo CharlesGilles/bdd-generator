@@ -2,10 +2,13 @@ type StepMatcher = string | RegExp;
 
 type StepBlock = 'given' | 'when' | 'then'; 
 
-type Imports = Map<string, {
+type ImportsData = {
     nammedImports: string[];
+    defaultImport?: string;
     sourceFile: string;
-}>;
+}
+
+type Imports = Map<string, ImportsData>;
 
 interface IScope {
     feature?: string;
@@ -81,5 +84,5 @@ interface Feature {
     extension: 'js' | 'ts' | 'jsx' | 'tsx'
 }
 
-export type { Hook, ParseStepDefinitionResult, StepMatcher, StepBlock, Imports, IScope, Scenario, Feature, StepDefinition, HookName, CommonCode };
+export type { Hook, ParseStepDefinitionResult, StepMatcher, StepBlock, Imports, ImportsData, IScope, Scenario, Feature, StepDefinition, HookName, CommonCode };
 export { ExecutionType };

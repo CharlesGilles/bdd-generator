@@ -1,7 +1,8 @@
-// Fichier généré le Sat, 30 Dec 2023 11:50:07 GMT
+// Fichier généré le Sat, 30 Dec 2023 14:16:57 GMT
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { PasswordValidator } from '../../password-validator';
-import { fonctionImportee } from '../fonctionImportee';
+import lol from '../fonctionImportee';
+import importParDefaut,{ fonctionImportee } from '../fonctionImportee';
 
 const feature = loadFeature('./src/__features__/basic-with-imports/basic-scenarios.feature');
 
@@ -36,12 +37,14 @@ defineFeature(feature, (defineScenario) => {
 	function IShouldBeGrantedAccess(defineMethod){
 		defineMethod('I should be granted access', () => {
 			expect(scenarioContext.accessGranted).toBe(true);
+			expect(lol).toBe(1);
 		});
 	}
 
 	function YOLO(defineMethod){
 		defineMethod('YOLO', () => {
 			fonctionImportee();
+			expect(importParDefaut).toBe(1);
 			expect(scenarioContext.yolo).toBe(10);
 		});
 	}

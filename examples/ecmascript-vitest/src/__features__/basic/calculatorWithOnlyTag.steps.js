@@ -1,4 +1,4 @@
-// Fichier généré le Sat, 30 Dec 2023 11:30:51 GMT
+// Fichier généré le Sat, 30 Dec 2023 14:16:57 GMT
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
 const feature = loadFeature('./src/__features__/basic/calculatorWithOnlyTag.feature');

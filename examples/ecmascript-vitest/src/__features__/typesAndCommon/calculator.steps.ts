@@ -1,4 +1,4 @@
-// Fichier généré le Sat, 30 Dec 2023 11:30:51 GMT
+// Fichier généré le Sat, 30 Dec 2023 14:16:57 GMT
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
 // Code commun à "./src/__features__/typesAndCommon/calculator1.stepdefinitions.ts"
