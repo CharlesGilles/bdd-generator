@@ -11,7 +11,7 @@ beforeEach(() => {
   scenarioContext.yolo = 10;
 });
 
-defineStep(["then"], "YOLO", () => {
+defineStep(["given", "then"], "YOLO", () => {
   fonctionImportee();
   expect(scenarioContext.yolo).toBe(10);
 });

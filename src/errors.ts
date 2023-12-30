@@ -58,10 +58,10 @@ export const formatStepMatchingError = (
         `${matchingStepDefinition.length} ${translation.get('sameStepFound')}:`,
       ),
     )}`;
-    matchingStepDefinition.forEach(({ block, match, scopes, cheminFichier }) => {
+    matchingStepDefinition.forEach(({ blocks, match, scopes, cheminFichier }) => {
       error += lineSeparator;
       error += `${kleur.bold(kleur.yellow('fichier'))}: ${cheminFichier}${endOfLine}`;
-      error += `${kleur.bold(kleur.yellow('block'))}  : ${block}${endOfLine}`;
+      error += `${kleur.bold(kleur.yellow('blocks'))}  : ${blocks.join(', ')}${endOfLine}`;
       error += `${kleur.bold(kleur.yellow('matcher'))}: ${match}${endOfLine}`;
       error += `${kleur.bold(kleur.yellow('scopes'))} : ${JSON.stringify(scopes)}`;
     });

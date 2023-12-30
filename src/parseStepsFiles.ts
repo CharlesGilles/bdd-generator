@@ -113,7 +113,7 @@ function createFunctionName(match: StepMatcher): string {
         .join('');
 }
 
-function getStepDefinition(usableFunctionsForSteps: string[], defineStep: CallExpression, stepBlock?: StepBlock): Omit<StepDefinition, 'imports'>[] {
+function getStepDefinition(usableFunctionsForSteps: string[], defineStep: CallExpression, stepBlock?: StepBlock): Omit<StepDefinition, 'imports'> {
     if (![2,3,4].includes(defineStep.arguments.length)) {
         throw createFormatStepsFileParsingError(defineStep.loc, translation.get('defineStepCall'));
     }
@@ -130,10 +130,9 @@ function getStepDefinition(usableFunctionsForSteps: string[], defineStep: CallEx
 
     const fileExtension = cheminFichierEnCours.substring(cheminFichierEnCours.lastIndexOf('.') + 1);
 
-
-    return blocks.map(block => ({
+    return {
         index: nextStepDefinitionIndex++,
-        block,
+        blocks,
         match,
         callback,
         scopes,
@@ -143,7 +142,7 @@ function getStepDefinition(usableFunctionsForSteps: string[], defineStep: CallEx
             jsx: fileExtension.endsWith('x'),
             ts: fileExtension.startsWith('t')
         }
-    }));
+    }
 }
 
 function removePackageImports(imports: Imports) {
@@ -271,7 +270,7 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
                         if (!imports.get(packageName)?.nammedImports?.includes('defineStep')) {
                             throw createFormatStepsFileParsingError(x.loc, translation.get('defineStepImport'));
                         }
-                        stepDefinitions.push(...getStepDefinition(usableFunctionsForSteps, x.expression));
+                        stepDefinitions.push(getStepDefinition(usableFunctionsForSteps, x.expression));
                         break;
                     case 'beforeAll':
                     case 'beforeEach':
@@ -285,7 +284,7 @@ function parseOneStepFile(cheminFichier: string): ParseOneStepDefinitionResult {
                         if (!imports.get(packageName)?.nammedImports?.includes(x.expression.callee.name)) {
                             throw createFormatStepsFileParsingError(x.loc, translation.get(`${x.expression.callee.name}Import`));
                         }
-                        stepDefinitions.push(...getStepDefinition(usableFunctionsForSteps, x.expression, x.expression.callee.name));
+                        stepDefinitions.push(getStepDefinition(usableFunctionsForSteps, x.expression, x.expression.callee.name));
                         break;
                     default:
                         throw createFormatStepsFileParsingError(x.loc, translation.get('onlyCallsInStepdefinitionFile'));

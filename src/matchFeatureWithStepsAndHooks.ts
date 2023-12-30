@@ -72,7 +72,7 @@ export function matchFeatureWithStepsAndHooks(
             scenario.steps.forEach((step) => {
                 currentBlock = getNewBlock(step.keyword, currentBlock);
                 const stepDefinitions = scopedSteps.filter((stepDefinition) => {
-                    if (stepDefinition.block !== currentBlock) {
+                    if (!stepDefinition.blocks.includes(currentBlock)) {
                         return false;
                     }
                     const matchResult = step.stepText.match(stepDefinition.match);
