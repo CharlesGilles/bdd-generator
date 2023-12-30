@@ -1,5 +1,6 @@
 import { defineStep, defineFileScopes, scenarioContext } from "@charlesgilles/bdd-generator";
 import { PasswordValidator } from "../../password-validator";
+import lol from '../fonctionImportee';
 
 defineFileScopes([
     {
@@ -28,4 +29,5 @@ defineStep(["when"], "I enter my password correctly", () => {
 
 defineStep(["then"], "I should be granted access", () => {
   expect(scenarioContext.accessGranted).toBe(true);
+  expect(lol).toBe(1);
 });
