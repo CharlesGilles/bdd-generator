@@ -32,9 +32,13 @@ function calculateNewPath(from: string, sourceFile: string, featureFile: string)
 
 function writeImports(data: string[], feature: Feature) {
     data.push("import { defineFeature, loadFeature } from 'jest-cucumber';");
-    for (const [from, { nammedImports, sourceFile }] of feature.imports.entries()) {
+    for (const [from, { nammedImports, defaultImport, sourceFile }] of feature.imports.entries()) {
+        console.log(feature.cheminFichier, from, nammedImports, defaultImport, sourceFile);
         const newFrom = calculateNewPath(from, sourceFile, feature.cheminFichier);
-        data.push(`import { ${[...nammedImports].join(', ')} } from '${newFrom}';`);
+        const defaultImportString = defaultImport ?? '';
+        const nammedImportsString = nammedImports.length !== 0 ? `{ ${[...nammedImports].join(', ')} }` : '';
+        const importsSeparator = defaultImportString && nammedImportsString ? ',' : '';
+        data.push(`import ${defaultImportString}${importsSeparator}${nammedImportsString} from '${newFrom}';`);
     }
     data.push('');
 }
