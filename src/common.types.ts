@@ -58,7 +58,7 @@ interface FileExtension {
 
 interface StepDefinition {
     index: number;
-    block: StepBlock;
+    blocks: StepBlock[];
     match: StepMatcher;
     callback: string;
     scopes: IScope[];
