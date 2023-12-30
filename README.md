@@ -14,26 +14,18 @@ Voici la commande pour installer le package
 ---
 ## Configuration
 
-La langue par défaut est l'anglais `en`.
-Le chemin par défaut pour l'exploration des fichiers `.feature` et `.stepdefinition.[tj]sx?` est `./src/__features__`.
-Le tag par défaut permettant d'ignorer la génération à un fichier feature est `ignore-generation`.
-Le tag par défaut permettant de ne générer que les fichiers feature voulu est `only-generation`.
-Le tag par défaut permettant de n'exécuter que certains scénarios est `only`.
-Le tag par défaut permettant d'ignorer l'exécution de scénario est `ignore`.
-La valeur par défaut indiquant s'il faut regénérer les fichiers peu importe s'i y a eu des modifications est `false`.
-
 Si vous souhaitez modifier cela, il vous faudra créer un fichier `bdd-generator.json`.
-
+Voici les paramètres par défaut:
 ```json
 {
     "lang": "en",
-    "steps": "relative/path/to/.stepdefinitions/files",
-    "features": "relative/path/to/.features/files",
+    "steps": "./src/__features__",
+    "features": "./src/__features__",
     "ignoreGenerationTag": "ignore-generation",
     "onlyGenerationTag": "only-generation",
     "ignoreExecutionTag": "ignore",
     "onlyExecutionTag": "only",
-    "forceGenerateSteps": false
+    "forceStepsRegeneration": false
 }
 ```
 Les champs du fichier de paramétrage sont optionnels si vous souhaitez modifier soit l'un soit l'autre ou les deux.
@@ -46,7 +38,7 @@ Une erreur vous sera indiquée si l'un des path renseigné n'existe pas.
 - onlyGenerationTag: Le tag permettant de ne générer que les fichiers demandés. Le tag doit être au niveau de la Feature.
 - ignoreExecutionTag: Ajoute dans le fichier .steps généré l'indicateur qu'il faut ignorer l'exécution d'un test. Le tag doit être placé au niveau d'un Scenario
 - onlyExecutionTag: Ajoute dans le fichier .steps généré l'indicateur qu'il ne faut exécuter que les tests correspondant. Le tag doit être placé au niveau d'un Scenario
-- forceGenerateSteps: Indique s'il faut regénéré en permanence les fichiers steps ou seulement lors de modifications
+- forceStepsRegeneration: Indique s'il faut regénéré en permanence les fichiers steps ou seulement lors de modifications
 
 ---
 ## Utilisation
@@ -148,7 +140,7 @@ Remarque: Ces fichiers supportent également le jsx.
 
 Comme énoncé dans l'introduction du package, nous allons écrire uniquement les steps correspondants aux fichiers `.feature`. Le package va se charger tout simplement de générer les fichiers `.steps` qui vont être exécutés par le framework de test.
 
-Un fichier `bdd-generator.hash.json` est créé lors de la génération. il est utilisé en complément du paramètre `forceGenerateSteps`. Il contient l'ensemble des hashs des fichiers .features et .stepdefinitions.
+Un fichier `bdd-generator.hash.json` est créé lors de la génération. il est utilisé en complément du paramètre `forceStepsRegeneration`. Il contient l'ensemble des hashs des fichiers .features et .stepdefinitions.
 
 ---
 ### Comment utiliser le package

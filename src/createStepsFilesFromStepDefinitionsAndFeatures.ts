@@ -23,7 +23,7 @@ import { matchFeatureWithStepsAndHooks } from "./matchFeatureWithStepsAndHooks";
 export function createStepsFilesFromStepDefinitionsAndFeatures(
     stepsFrom: string,
     featuresFrom: string,
-    forceRegenerateSteps: boolean,
+    forceStepsRegeneration: boolean,
     ignoreGenerationTag: string,
     onlyGenerationTag: string,
     ignoreExecutionTag: string,
@@ -46,6 +46,6 @@ export function createStepsFilesFromStepDefinitionsAndFeatures(
 
     t = logStepTime(t, translation.get("matchingFeaturesAndSteps"));
     
-    createSpecsFiles(featuresWithSteps, forceRegenerateSteps);
+    createSpecsFiles(featuresWithSteps, forceStepsRegeneration);
     logStepTime(t, translation.get("writtingSteps"));
 }

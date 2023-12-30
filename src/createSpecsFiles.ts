@@ -149,12 +149,12 @@ function checkHashes(featureName: string, featureHashes: Hash){
         && hashes[featureName]?.imports === featureHashes.imports;
 }
 
-function createSpecsFile(feature: Feature, forceRegenerateSteps: boolean) {
+function createSpecsFile(feature: Feature, forceStepsRegeneration: boolean) {
     const data: string[] = [];
 
     const featureHashes = GenerateHashes(feature);
 
-    if (!forceRegenerateSteps && checkHashes(feature.nom, featureHashes)){
+    if (!forceStepsRegeneration && checkHashes(feature.nom, featureHashes)){
         return;
     }
 
@@ -172,18 +172,18 @@ function createSpecsFile(feature: Feature, forceRegenerateSteps: boolean) {
     const filePath = `${feature.cheminFichier.substring(0, feature.cheminFichier.lastIndexOf('.'))}.steps.${feature.extension}`;
     fs.writeFile(filePath, data.join('\n'), writeFileOptions, writeFileCallback);
 
-    if (!forceRegenerateSteps){
+    if (!forceStepsRegeneration){
         hashes[feature.nom] = featureHashes;
         createdCount++;
     }
 }
 
-function createSpecsFiles(features: Feature[], forceRegenerateSteps: boolean) {
+function createSpecsFiles(features: Feature[], forceStepsRegeneration: boolean) {
     features.forEach(feature => {
-        createSpecsFile(feature, forceRegenerateSteps);
+        createSpecsFile(feature, forceStepsRegeneration);
     });
 
-    if (!forceRegenerateSteps){
+    if (!forceStepsRegeneration){
         createHashFile(hashes);
         console.log(translation.get("numberOfWrittenSteps", { nbWritten: kleur.green(createdCount) }));
     }
