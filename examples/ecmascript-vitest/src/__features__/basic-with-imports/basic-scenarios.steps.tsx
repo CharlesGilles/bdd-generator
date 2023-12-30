@@ -1,6 +1,7 @@
-// Fichier généré le Fri, 29 Dec 2023 13:16:12 GMT
+// Fichier généré le Sat, 30 Dec 2023 11:30:51 GMT
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { PasswordValidator } from '../../password-validator';
+import { fonctionImportee } from '../fonctionImportee';
 
 const feature = loadFeature('./src/__features__/basic-with-imports/basic-scenarios.feature');
 
@@ -40,6 +41,7 @@ defineFeature(feature, (defineScenario) => {
 
 	function YOLO(defineMethod){
 		defineMethod('YOLO', () => {
+			fonctionImportee();
 			expect(scenarioContext.yolo).toBe(10);
 		});
 	}
