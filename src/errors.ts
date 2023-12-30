@@ -27,6 +27,23 @@ export const formatStepsFileParsingError = (
   return error;
 };
 
+export const formatTwoDefaultImportsError = (
+  from: string,
+  defaultImport1: string,
+  defaultImport2: string,
+  featureSource: string,
+  defaultImport2Source: string
+) => {
+  let error = `${translation.get('defaultImportWithMultipleNames')} :${endOfLine}${kleur.red(
+    featureSource,
+  )}${lineSeparator}`;
+  error += `package: ${kleur.bold(kleur.yellow(from))}${endOfLine}`
+  error += `import 1: ${kleur.bold(kleur.yellow(defaultImport1))}${endOfLine}`;
+  error += `import 2: ${kleur.bold(kleur.yellow(defaultImport2))}, source: ${kleur.yellow(defaultImport2Source)}${endOfLine}`;
+
+  return error;
+};
+
 export const formatStepMatchingError = (
     fichierFeature: string,
     feature: ParsedFeature,

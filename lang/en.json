@@ -19,6 +19,7 @@
   "impossibleBind": "Impossible to bind a step in file",
   "noStepFound": "No step definition have been found.",
   "sameStepFound": "Same step definition found",
+  "defaultImportWithMultipleNames": "The following default import is named different ways in different files",
 
   "commonCodeFrom": "Common code for",
   "endCommonCodeFrom": "End of common code for",

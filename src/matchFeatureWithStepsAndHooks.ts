@@ -1,6 +1,7 @@
 import { ParsedFeature, ParsedScenario } from 'jest-cucumber/dist/src/models';
 import { Feature, Imports, StepDefinition, Scenario, StepBlock, ParseStepDefinitionResult, IScope, ExecutionType, Hook, CommonCode, ImportsData } from "./common.types";
-import { formatStepMatchingError } from "./errors";
+import { formatStepMatchingError, formatTwoDefaultImportsError } from "./errors";
+import path from 'path';
 
 const stepblocks = ['given', 'when', 'then'];
 
@@ -48,6 +49,14 @@ export function findScopeMatchingSteps(steps: StepDefinition[], feature: ParsedF
 const stepsAlreadyInFeatureSteps = (stepDefinition: StepDefinition, scenarioSteps: StepDefinition[]) => scenarioSteps.some(
     scenarioStep => scenarioStep.index === stepDefinition.index
 );
+
+function calculateNewPath(from: string, sourceFile: string, featureFile: string){
+    if (path.isAbsolute(from)){
+        return from;
+    }
+    const relativePath = path.relative(path.dirname(featureFile), path.dirname(sourceFile));
+    return path.posix.join(relativePath, from);
+}
 
 export function matchFeatureWithStepsAndHooks(
     cheminFichier: string,
@@ -102,17 +111,24 @@ export function matchFeatureWithStepsAndHooks(
                 });
 
                 stepDefinition.imports.forEach((stepImportData, from) => {
-                    let featureImportsData = featureImports.get(from);
+                    const newFrom = calculateNewPath(from, stepDefinition.cheminFichier, cheminFichier);
+                    let featureImportsData = featureImports.get(newFrom);
 
                     if (featureImportsData === undefined) {
                         featureImportsData = stepImportData;
-                        featureImports.set(from, stepImportData);
+                        featureImports.set(newFrom, stepImportData);
                         return;
                     }
 
                     if (stepImportData.defaultImport){
                         if (featureImportsData.defaultImport && featureImportsData.defaultImport !== stepImportData.defaultImport){
-                            throw new Error("default import différents");
+                            throw new Error(formatTwoDefaultImportsError(
+                                newFrom,
+                                featureImportsData.defaultImport,
+                                stepImportData.defaultImport,
+                                cheminFichier,
+                                stepDefinition.cheminFichier
+                            ));
                         }
                         else {
                             featureImportsData.defaultImport = stepImportData.defaultImport;
