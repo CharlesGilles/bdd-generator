@@ -57,7 +57,7 @@ export function matchFeatureWithStepsAndHooks(
     onlyExecutionTag: string
 ): Feature {
     const featureSteps: StepDefinition[] = [];
-    const featureImports: Imports = new Map<string, string[]>();
+    const featureImports: Imports = new Map<string, { nammedImports: string[]; sourceFile: string }>();
     const scenariosWithSteps: Scenario[] = [];
 
     function matchScenariosSteps(scenarios: ParsedScenario[]) {
@@ -101,21 +101,21 @@ export function matchFeatureWithStepsAndHooks(
                     functionName: stepDefinition.functionName
                 });
 
-                stepDefinition.imports.forEach((imports, from) => {
+                stepDefinition.imports.forEach(({ nammedImports, sourceFile }, from) => {
                     let importsValues: string[];
                     if (!featureImports.has(from)) {
                         importsValues = [];
-                        featureImports.set(from, importsValues);
+                        featureImports.set(from, { sourceFile, nammedImports: importsValues });
                     } else {
-                        importsValues = featureImports.get(from);
+                        importsValues = featureImports.get(from)?.nammedImports;
                     }
-                    imports.forEach((value) => {
+                    nammedImports.forEach((value) => {
                         importsValues.push(value);
                     });
                 });
 
-                featureImports.forEach((values, from, map) => {
-                    map.set(from, [...new Set(values)]);
+                featureImports.forEach(({ nammedImports, sourceFile }, from, map) => {
+                    map.set(from, { sourceFile, nammedImports: [...new Set(nammedImports)] });
                 });
             });
             scenariosWithSteps.push(scenarioWithSteps);

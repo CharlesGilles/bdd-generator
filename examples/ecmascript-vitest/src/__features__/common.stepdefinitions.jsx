@@ -1,4 +1,5 @@
 import { defineStep, defineFileScopes, scenarioContext } from "@charlesgilles/bdd-generator";
+import { fonctionImportee } from './fonctionImportee';
 
 defineFileScopes([
     {
@@ -11,5 +12,6 @@ beforeEach(() => {
 });
 
 defineStep(["then"], "YOLO", () => {
+  fonctionImportee();
   expect(scenarioContext.yolo).toBe(10);
 });
