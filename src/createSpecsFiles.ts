@@ -24,7 +24,6 @@ function writeHeadComment(data: string[], date: string) {
 function writeImports(data: string[], feature: Feature) {
     data.push("import { defineFeature, loadFeature } from 'jest-cucumber';");
     for (const [from, { nammedImports, defaultImport, sourceFile }] of feature.imports.entries()) {
-        console.log(feature.cheminFichier, from, nammedImports, defaultImport, sourceFile);
         const defaultImportString = defaultImport ?? '';
         const nammedImportsString = nammedImports.length !== 0 ? `{ ${[...nammedImports].join(', ')} }` : '';
         const importsSeparator = defaultImportString && nammedImportsString ? ',' : '';
