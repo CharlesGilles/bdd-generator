@@ -51,11 +51,11 @@ const stepsAlreadyInFeatureSteps = (stepDefinition: StepDefinition, scenarioStep
 );
 
 function calculateNewPath(from: string, sourceFile: string, featureFile: string){
-    if (path.isAbsolute(from)){
-        return from;
+    if (from.startsWith('./') || from.startsWith('../')){
+        const relativePath = path.relative(path.dirname(featureFile), path.dirname(sourceFile));
+        return path.posix.join(relativePath, from);
     }
-    const relativePath = path.relative(path.dirname(featureFile), path.dirname(sourceFile));
-    return path.posix.join(relativePath, from);
+    return from;
 }
 
 export function matchFeatureWithStepsAndHooks(
